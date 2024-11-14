@@ -1,34 +1,66 @@
 import { useState } from "react";
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { motion } from "framer-motion";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { motion } from "framer-motion";
-import { ArrowUpRight, Users, DollarSign, ShoppingCart, TrendingUp } from "lucide-react";
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  PieChart,
+  Pie,
+  Cell,
+} from "recharts";
+import { ArrowUpRight, ArrowDownRight, Users, Globe, MousePointer, TrendingUp } from "lucide-react";
+import { visitorStats, locationData, trafficData, timeSeriesData } from "@/data/mockStats";
 
-const mockData = [
-  { name: "Jan", value: 400 },
-  { name: "Feb", value: 300 },
-  { name: "Mar", value: 600 },
-  { name: "Apr", value: 800 },
-  { name: "May", value: 700 },
-];
-
-const statsCards = [
-  { title: "Total Users", value: "12,345", icon: Users, change: "+12%" },
-  { title: "Revenue", value: "$45,678", icon: DollarSign, change: "+8%" },
-  { title: "Orders", value: "1,234", icon: ShoppingCart, change: "+15%" },
-  { title: "Growth", value: "23%", icon: TrendingUp, change: "+5%" },
-];
+const COLORS = ["#4f46e5", "#7c3aed", "#2563eb", "#7c3aed", "#6366f1"];
 
 const AdminStats = () => {
   const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+
+  const statsCards = [
+    { 
+      title: "Total Visitors", 
+      value: visitorStats.total.toLocaleString(), 
+      icon: Users,
+      change: visitorStats.change,
+      trend: visitorStats.trend 
+    },
+    { 
+      title: "Top Location", 
+      value: locationData[0].country, 
+      icon: Globe,
+      change: `${locationData[0].percentage}%`,
+      trend: "up" 
+    },
+    { 
+      title: "Main Traffic Source", 
+      value: trafficData[0].source, 
+      icon: MousePointer,
+      change: `${trafficData[0].percentage}%`,
+      trend: "up" 
+    },
+    { 
+      title: "Growth Rate", 
+      value: "23%", 
+      icon: TrendingUp,
+      change: "+5%",
+      trend: "up" 
+    },
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50/50 p-8">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
           <Badge variant="secondary" className="mb-2">Dashboard</Badge>
-          <h1 className="text-4xl font-bold tracking-tight">Admin Statistics</h1>
+          <h1 className="text-4xl font-bold tracking-tight">Visitor Statistics</h1>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -52,10 +84,16 @@ const AdminStats = () => {
                       animate={{
                         scale: hoveredCard === index ? 1.1 : 1,
                       }}
-                      className="flex items-center text-green-500 text-sm"
+                      className={`flex items-center ${
+                        card.trend === "up" ? "text-green-500" : "text-red-500"
+                      } text-sm`}
                     >
                       {card.change}
-                      <ArrowUpRight className="w-4 h-4 ml-1" />
+                      {card.trend === "up" ? (
+                        <ArrowUpRight className="w-4 h-4 ml-1" />
+                      ) : (
+                        <ArrowDownRight className="w-4 h-4 ml-1" />
+                      )}
                     </motion.div>
                   </div>
                   <h3 className="text-sm font-medium text-muted-foreground">
@@ -68,38 +106,91 @@ const AdminStats = () => {
           })}
         </div>
 
-        <Card className="p-6">
-          <h3 className="text-lg font-semibold mb-4">Growth Overview</h3>
-          <div className="h-[400px] w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={mockData}>
-                <defs>
-                  <linearGradient id="colorValue" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                <XAxis dataKey="name" className="text-sm" />
-                <YAxis className="text-sm" />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: "hsl(var(--background))",
-                    border: "1px solid hsl(var(--border))",
-                    borderRadius: "var(--radius)",
-                  }}
-                />
-                <Area
-                  type="monotone"
-                  dataKey="value"
-                  stroke="hsl(var(--primary))"
-                  fillOpacity={1}
-                  fill="url(#colorValue)"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <Card className="p-6">
+            <h3 className="text-lg font-semibold mb-4">Visitor Trends</h3>
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={timeSeriesData}>
+                  <defs>
+                    <linearGradient id="colorVisitors" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                      <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis dataKey="name" />
+                  <YAxis />
+                  <Tooltip />
+                  <Area
+                    type="monotone"
+                    dataKey="visitors"
+                    stroke="hsl(var(--primary))"
+                    fillOpacity={1}
+                    fill="url(#colorVisitors)"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </Card>
+
+          <Card className="p-6">
+            <h3 className="text-lg font-semibold mb-4">Traffic Sources</h3>
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={trafficData}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis dataKey="source" />
+                  <YAxis />
+                  <Tooltip />
+                  <Bar dataKey="visitors" fill="hsl(var(--primary))" />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </Card>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card className="p-6">
+            <h3 className="text-lg font-semibold mb-4">Visitor Locations</h3>
+            <div className="h-[300px]">
+              <ResponsiveContainer width="100%" height="100%">
+                <PieChart>
+                  <Pie
+                    data={locationData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    outerRadius={100}
+                    fill="#8884d8"
+                    dataKey="visitors"
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                  >
+                    {locationData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </Card>
+
+          <Card className="p-6">
+            <h3 className="text-lg font-semibold mb-4">Recent Activity</h3>
+            <div className="space-y-4">
+              {locationData.map((location, index) => (
+                <div key={location.country} className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[index % COLORS.length] }} />
+                    <span>{location.country}</span>
+                  </div>
+                  <span className="font-medium">{location.visitors.toLocaleString()} visitors</span>
+                </div>
+              ))}
+            </div>
+          </Card>
+        </div>
       </div>
     </div>
   );
