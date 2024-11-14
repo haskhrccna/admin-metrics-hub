@@ -20,29 +20,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-
-const lineChartData = [
-  { name: "Jan", ipsum: 400, dolor: 240 },
-  { name: "Feb", ipsum: 300, dolor: 450 },
-  { name: "Mar", ipsum: 550, dolor: 350 },
-  { name: "Apr", ipsum: 450, dolor: 500 },
-  { name: "May", ipsum: 600, dolor: 300 },
-  { name: "Jun", ipsum: 400, dolor: 450 },
-];
-
-const barChartData = [
-  { name: "Jan", value: 400 },
-  { name: "Feb", value: 300 },
-  { name: "Mar", value: 550 },
-  { name: "Apr", value: 450 },
-  { name: "May", value: 600 },
-  { name: "Jun", value: 400 },
-];
-
-const pieChartData = [
-  { name: "Lorem", value: 70 },
-  { name: "Ipsum", value: 30 },
-];
+import { mockStats, visitorLocationData, pageViewsData, visitorDeviceData } from "@/data/mockStats";
 
 const AdminStats = () => {
   const [date, setDate] = useState<Date | undefined>(new Date());
@@ -54,28 +32,24 @@ const AdminStats = () => {
         <Card className="md:col-span-3">
           <CardContent className="p-6">
             <div className="space-y-4">
-              <div>
-                <span className="text-sm text-muted-foreground">Lorem ipsum</span>
-                <div className="flex items-center">
-                  <span className="text-2xl font-bold">1974</span>
-                  <span className="ml-2 text-green-500">↑</span>
+              {mockStats.map((stat) => (
+                <div key={stat.id}>
+                  <span className="text-sm text-muted-foreground">{stat.title}</span>
+                  <div className="flex items-center">
+                    <span className="text-2xl font-bold">{stat.value}</span>
+                  </div>
+                  <span className="text-xs text-muted-foreground">{stat.description}</span>
                 </div>
-                <span className="text-xs text-muted-foreground">Dolor sit amet, consectetur adipiscing</span>
-              </div>
-              <div>
-                <span className="text-sm text-muted-foreground">Sed fugit</span>
-                <div className="flex items-center">
-                  <span className="text-2xl font-bold">287</span>
-                  <span className="ml-2 text-red-500">↓</span>
-                </div>
-                <span className="text-xs text-muted-foreground">Nulla facilisi at vero</span>
-              </div>
+              ))}
             </div>
           </CardContent>
         </Card>
 
         {/* Calendar */}
         <Card className="md:col-span-4">
+          <CardHeader>
+            <CardTitle>Date Range Selection</CardTitle>
+          </CardHeader>
           <CardContent className="p-6">
             <Calendar
               mode="single"
@@ -86,52 +60,54 @@ const AdminStats = () => {
           </CardContent>
         </Card>
 
-        {/* Progress and Search */}
+        {/* Search and Progress */}
         <Card className="md:col-span-5">
+          <CardHeader>
+            <CardTitle>Quick Search</CardTitle>
+          </CardHeader>
           <CardContent className="p-6">
             <div className="space-y-4">
               <div className="relative">
                 <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                <Input placeholder="Search..." className="pl-8" />
+                <Input placeholder="Search analytics..." className="pl-8" />
               </div>
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span>Commodo</span>
-                  <span>75%</span>
+                  <span>Engagement Rate</span>
+                  <span>68%</span>
                 </div>
-                <Progress value={75} className="h-2" />
+                <Progress value={68} className="h-2" />
               </div>
             </div>
           </CardContent>
         </Card>
 
-        {/* Line Chart */}
+        {/* Page Views Chart */}
         <Card className="md:col-span-7">
           <CardHeader>
-            <CardTitle>Dolor sit amet</CardTitle>
+            <CardTitle>Page Views Over Time</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={lineChartData}>
+              <LineChart data={pageViewsData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
-                <Line type="monotone" dataKey="ipsum" stroke="#8884d8" />
-                <Line type="monotone" dataKey="dolor" stroke="#ffa07a" />
+                <Line type="monotone" dataKey="views" stroke="#8884d8" />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        {/* Bar Chart */}
+        {/* Visitor Locations */}
         <Card className="md:col-span-5">
           <CardHeader>
-            <CardTitle>Adipiscing</CardTitle>
+            <CardTitle>Visitor Locations</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
-              <BarChart data={barChartData}>
+              <BarChart data={visitorLocationData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
@@ -142,34 +118,34 @@ const AdminStats = () => {
           </CardContent>
         </Card>
 
-        {/* Area Charts */}
+        {/* Traffic Trends */}
         <Card className="md:col-span-7">
           <CardHeader>
-            <CardTitle>Consectetur</CardTitle>
+            <CardTitle>Traffic Trends</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={200}>
-              <AreaChart data={lineChartData}>
+              <AreaChart data={pageViewsData}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" />
                 <YAxis />
                 <Tooltip />
-                <Area type="monotone" dataKey="ipsum" stroke="#8884d8" fill="#8884d8" />
+                <Area type="monotone" dataKey="views" stroke="#8884d8" fill="#8884d8" />
               </AreaChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        {/* Pie Chart */}
+        {/* Device Distribution */}
         <Card className="md:col-span-5">
           <CardHeader>
-            <CardTitle>Distribution</CardTitle>
+            <CardTitle>Device Distribution</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={200}>
               <PieChart>
                 <Pie
-                  data={pieChartData}
+                  data={visitorDeviceData}
                   cx="50%"
                   cy="50%"
                   innerRadius={60}
