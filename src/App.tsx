@@ -8,6 +8,7 @@ import Navigation from "./components/Navigation";
 import { Routes, Route, useLocation } from "react-router-dom";
 import Index from "./pages/Index";
 import Contact from "./pages/Contact";
+import Admin from "./pages/Admin";
 import { useEffect } from "react";
 import { trackVisitor } from "./utils/visitorTracking";
 import { toast } from "./components/ui/use-toast";
@@ -45,6 +46,7 @@ const AppContent = () => {
       <Routes>
         <Route path="/" element={<Index />} />
         <Route path="/contact" element={<Contact />} />
+        <Route path="/admin" element={<Admin />} />
       </Routes>
       <Toaster />
       <Sonner />

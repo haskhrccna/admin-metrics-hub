@@ -61,6 +61,9 @@ const Navigation = () => {
               <Link to="/contact" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
                 Contact Me
               </Link>
+              <Link to="/admin" className="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors">
+                Admin
+              </Link>
               
               <DropdownMenu>
                 <DropdownMenuTrigger className="inline-flex items-center justify-center text-gray-300 hover:text-white focus:outline-none">
@@ -104,6 +107,9 @@ const Navigation = () => {
             </a>
             <Link to="/contact" className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium transition-colors">
               Contact Me
+            </Link>
+            <Link to="/admin" className="text-gray-300 hover:text-white block px-3 py-2 rounded-md text-base font-medium transition-colors">
+              Admin
             </Link>
             <div className="px-3 py-2">
               <DropdownMenu>
